@@ -128,3 +128,37 @@ h1 {
 .notification-container.show {
   transform: translateY(-50px);
 }
+
+
+#options{
+  width: 300px;
+  background-color: rgb(255, 255, 255);
+  height: 40px;
+  border: 2px solid black;
+  /* border-radius: ; */
+
+}
+
+#enter{
+  width: 100px;
+  height: 40px;
+  border: 2px solid black;
+  position: relative;
+  display: block;
+}
+#init-container{
+  margin: auto;
+  text-align: center;
+}
+
+input{
+  width: 450px;
+  height: 8%;
+  margin-bottom: 20px;
+  padding: 25px;
+  border: 2px solid black;
+}
+
+.join-game{
+  margin-bottom: 100px;
+}
