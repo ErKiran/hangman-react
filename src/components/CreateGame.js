@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import getSocket from "../socket";
+import {HangmanContext} from "../context/HangmanContext";
 
 // rafce
 const CreateGame = () => {
   const [roomName, setRoomName] = useState("");
-  const [secretWord, setSecretWord] = useState("");
+  const {setSecretWord,secretWord} = useContext(HangmanContext)
+
+  const socket = getSocket("localhost:8000")
 
   function setUserRoomName(e) {
     e.preventDefault()
@@ -18,9 +22,7 @@ const CreateGame = () => {
 
   function handleSubmit(e){
       e.preventDefault()
-      console.log("roomName",roomName)
-      console.log("secretword",secretWord)
-
+      socket.emit("create-game",{roomName,secretWord})
   }
 
   return (

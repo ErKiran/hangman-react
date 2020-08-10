@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-
+import getSocket from "../socket";
 // rafce
 const JoinGame = () => {
   const [roomName, setRoomName] = useState("");
   const [nickName, setNickName] = useState("");
+
+  const socket = getSocket("localhost:8000")
 
   function setUserRoomName(e) {
     e.preventDefault()
@@ -18,9 +20,7 @@ const JoinGame = () => {
 
   function handleSubmit(e){
       e.preventDefault()
-      console.log("roomName",roomName)
-      console.log("nickName",nickName)
-
+      socket.emit("join-game",{roomName,nickName})
   }
 
   return (
