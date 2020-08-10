@@ -76,6 +76,7 @@ function App() {
     return <CreateGame/>
   }
 
+if (userOption === "play"){  
   return (
     <>
       <Header />
@@ -94,6 +95,7 @@ function App() {
       <Notification showNotification={showNotification} />
     </>
   );
+}
 }
 
 export default App;

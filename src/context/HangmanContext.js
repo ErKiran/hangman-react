@@ -5,6 +5,7 @@ export const HangmanContext = createContext()
 const HangmanContextProvider = ({ children }) => {
     const [userOption, setUserOption] = useState("");
     const [secretWord, setSecretWord] = useState("");
+    const [roomName, setRoomName] = useState("");
 
     return (
         <HangmanContext.Provider
@@ -13,6 +14,8 @@ const HangmanContextProvider = ({ children }) => {
               setUserOption,
               secretWord,
               setSecretWord,
+              roomName,
+              setRoomName
              }}
         >
           {children}
