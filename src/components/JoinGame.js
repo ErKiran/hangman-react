@@ -3,7 +3,13 @@ import { HangmanContext } from "../context/HangmanContext";
 import getSocket from "../socket";
 // rafce
 const JoinGame = () => {
-  const { roomName, setRoomName, setUserOption} = useContext(HangmanContext);
+  const {
+    setSecretWord,
+    roomName,
+    setRoomName,
+    setUserOption,
+    setPlayable,
+  } = useContext(HangmanContext);
   const [nickName, setNickName] = useState("");
 
   const socket = getSocket("localhost:8000");
@@ -25,9 +31,15 @@ const JoinGame = () => {
     }
 
     socket.on("all-games", (res) => {
-      if (res.some((i) => i.roomName === roomName)) {
-        setUserOption("play")
-        console.log("Bingo",roomName)
+      if (res && res.length > 0) {
+        if (res.some((i) => i.roomName === roomName)) {
+          const filtered = res.filter((i) => i.roomName === roomName);
+          if (filtered && filtered.length > 0) {
+            setSecretWord(filtered[0].secretWord.toLowerCase());
+            setUserOption("play");
+            setPlayable(true)
+          }
+        }
       }
     });
   }
