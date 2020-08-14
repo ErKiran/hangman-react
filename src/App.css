@@ -174,3 +174,10 @@ input {
 .join-game {
   margin-bottom: 100px;
 }
+
+
+.error{
+  display: block;
+  justify-content: center;
+  color:red;
+}

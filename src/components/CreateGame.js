@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import getSocket from "../socket";
 import { HangmanContext } from "../context/HangmanContext";
 
@@ -7,6 +7,8 @@ const CreateGame = () => {
   const { setSecretWord, secretWord, roomName, setRoomName } = useContext(
     HangmanContext
   );
+
+  const [roomNameError, setRoomNameError] = useState(false);
 
   const socket = getSocket("localhost:8000");
 
@@ -17,12 +19,25 @@ const CreateGame = () => {
 
   function setGameWord(e) {
     e.preventDefault();
-    setSecretWord(e.target.value);
+    let value = e.target.value.toLowerCase();
+    value = value.replace(/[^A-Za-z]/gi, "");
+    setSecretWord(value);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    socket.emit("create-game", { roomName, secretWord });
+    if (roomName !== "" && secretWord !== "") {
+      socket.emit("check-rooms", roomName);
+      socket.on("do-room-exists", (check) => {
+        console.log("Exists", check);
+        if (!check) {
+          setRoomNameError(false)
+          socket.emit("create-game", { roomName, secretWord });
+        } else {
+          setRoomNameError(true);
+        }
+      });
+    }
   }
 
   return (
@@ -36,13 +51,15 @@ const CreateGame = () => {
           name="roomname"
           placeholder="MyRoom"
           onChange={setUserRoomName}
-        ></input>
+        />
+        {roomNameError ? <span className="error">Roomname is already taken!!</span> : ""}
         <h5>Enter a SecretWord:</h5>
         <input
           name="secretword"
           placeholder="secretword"
+          value={secretWord}
           onChange={setGameWord}
-        ></input>
+        />
         <button name="enter" id="enter">
           Enter
         </button>
