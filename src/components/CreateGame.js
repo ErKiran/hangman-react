@@ -9,6 +9,9 @@ const CreateGame = () => {
   );
 
   const [roomNameError, setRoomNameError] = useState(false);
+  const [emptyRoomName, setEmptyRoomName] = useState(false);
+  const [secretWordError, setSecretWordError] = useState(false);
+  const [hasCreatedRoom, setHasCreatedRoom] = useState(false);
 
   const socket = getSocket("localhost:8000");
 
@@ -26,46 +29,80 @@ const CreateGame = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (roomName !== "" && secretWord !== "") {
-      socket.emit("check-rooms", roomName);
-      socket.on("do-room-exists", (check) => {
-        console.log("Exists", check);
-        if (!check) {
-          setRoomNameError(false)
-          socket.emit("create-game", { roomName, secretWord });
-        } else {
-          setRoomNameError(true);
-        }
-      });
+    if (roomName === "" && secretWord === "") {
+      setEmptyRoomName(true);
+      setSecretWordError(true);
+      return;
     }
+
+    setEmptyRoomName(false)
+    setSecretWordError(false)
+
+    socket.emit("check-rooms", roomName);
+    socket.on("do-room-exists", (check) => {
+      if (!check) {
+        if (secretWord.length < 2) {
+          setSecretWordError(true);
+        }
+        setRoomNameError(false);
+        socket.emit("create-game", { roomName, secretWord });
+        if (!secretWordError) {
+          setHasCreatedRoom(true);
+        }
+      } else {
+        setRoomNameError(true);
+      }
+    });
   }
 
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <div className="join-game">
-          <h1>Create Game</h1>
-        </div>
-        <h5>Enter a Roomname:</h5>
-        <input
-          name="roomname"
-          placeholder="MyRoom"
-          onChange={setUserRoomName}
-        />
-        {roomNameError ? <span className="error">Roomname is already taken!!</span> : ""}
-        <h5>Enter a SecretWord:</h5>
-        <input
-          name="secretword"
-          placeholder="secretword"
-          value={secretWord}
-          onChange={setGameWord}
-        />
-        <button name="enter" id="enter">
-          Enter
-        </button>
-      </form>
-    </>
-  );
+  if (hasCreatedRoom) {
+    return <>Bingo</>;
+  }
+
+  if (!hasCreatedRoom) {
+    return (
+      <>
+        <form onSubmit={handleSubmit}>
+          <div className="join-game">
+            <h1>Create Game</h1>
+          </div>
+          <h5>Enter a Roomname:</h5>
+          <input
+            name="roomname"
+            placeholder="MyRoom"
+            onChange={setUserRoomName}
+          />
+          {roomNameError ? (
+            <span className="error">Roomname is already taken!!</span>
+          ) : (
+            ""
+          )}
+          {emptyRoomName ? (
+            <span className="error">Roomname shouldn't be empty!!</span>
+          ) : (
+            ""
+          )}
+          <h5>Enter a SecretWord:</h5>
+          <input
+            name="secretword"
+            placeholder="secretword"
+            value={secretWord}
+            onChange={setGameWord}
+          />
+          {secretWordError ? (
+            <span className="error">
+              Secret Word should be greater than 2 word!!
+            </span>
+          ) : (
+            ""
+          )}
+          <button name="enter" id="enter">
+            Enter
+          </button>
+        </form>
+      </>
+    );
+  }
 };
 
 export default CreateGame;
