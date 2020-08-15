@@ -7,6 +7,7 @@ const HangmanContextProvider = ({ children }) => {
   const [playable, setPlayable] = useState(false);
   const [secretWord, setSecretWord] = useState("");
   const [roomName, setRoomName] = useState("");
+  const [usersOfRoom, setUsersOfRoom] = useState([])
 
   return (
     <HangmanContext.Provider
@@ -19,6 +20,8 @@ const HangmanContextProvider = ({ children }) => {
         setRoomName,
         playable,
         setPlayable,
+        usersOfRoom,
+        setUsersOfRoom,
       }}
     >
       {children}

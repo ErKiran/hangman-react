@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import getSocket from "../socket";
 import { HangmanContext } from "../context/HangmanContext";
+import GameCreatorDashboard from "./GameCreatorDashboard";
 
 // rafce
 const CreateGame = () => {
@@ -45,7 +46,7 @@ const CreateGame = () => {
           setSecretWordError(true);
         }
         setRoomNameError(false);
-        socket.emit("create-game", { roomName, secretWord });
+        socket.emit("create-room", { roomName, secretWord });
         if (!secretWordError) {
           setHasCreatedRoom(true);
         }
@@ -56,7 +57,9 @@ const CreateGame = () => {
   }
 
   if (hasCreatedRoom) {
-    return <>Bingo</>;
+    return <>
+    <GameCreatorDashboard/>
+    </>;
   }
 
   if (!hasCreatedRoom) {

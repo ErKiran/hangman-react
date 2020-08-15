@@ -181,3 +181,8 @@ input {
   justify-content: center;
   color:red;
 }
+
+.players{
+  display: block;
+  justify-content: center;
+}

@@ -9,6 +9,7 @@ const JoinGame = () => {
     setRoomName,
     setUserOption,
     setPlayable,
+    setUsersOfRoom,
   } = useContext(HangmanContext);
   const [nickName, setNickName] = useState("");
 
@@ -27,21 +28,22 @@ const JoinGame = () => {
   function handleSubmit(e) {
     e.preventDefault();
     if (roomName !== "" && nickName !== "") {
-      socket.emit("join-game", { roomName, nickName });
+      socket.emit("join-room", { roomName, nickName });
     }
 
-    socket.on("all-games", (res) => {
+    socket.on("all-rooms", (res) => {
       if (res && res.length > 0) {
         if (res.some((i) => i.roomName === roomName)) {
           const filtered = res.filter((i) => i.roomName === roomName);
           if (filtered && filtered.length > 0) {
             setSecretWord(filtered[0].secretWord.toLowerCase());
             setUserOption("play");
-            setPlayable(true)
+            setPlayable(true);
           }
         }
       }
     });
+    socket.on("all-user-of-rooms", (res) => setUsersOfRoom(res));
   }
 
   return (
